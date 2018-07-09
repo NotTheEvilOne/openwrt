@@ -83,6 +83,13 @@ define Device/ArcherMR200
 endef
 TARGET_DEVICES += ArcherMR200
 
+define Device/bocco
+  DTS := BOCCO
+  DEVICE_TITLE := YUKAI Engineering BOCCO
+  DEVICE_PACKAGES := kmod-sound-core kmod-sound-mt7620 kmod-i2c-ralink
+endef
+TARGET_DEVICES += bocco
+
 define Device/c108
   DTS := C108
   IMAGE_SIZE := 16777216
@@ -201,7 +208,7 @@ define Device/ex2700
   BLOCKSIZE := 4k
   IMAGE_SIZE := $(ralink_default_fw_size_4M)
   IMAGES += factory.bin
-  KERNEL := $(KERNEL_DTB) | uImage lzma | pad-offset 64k 64 | append-uImage-fakeroot-hdr
+  KERNEL := $(KERNEL_DTB) | uImage lzma | pad-offset 64k 64 | append-uImage-fakehdr filesystem
   IMAGE/factory.bin := $$(sysupgrade_bin) | check-size $$$$(IMAGE_SIZE) | \
 	netgear-dni
   DEVICE_PACKAGES := -kmod-mt76
@@ -424,6 +431,14 @@ define Device/psg1218b
 endef
 TARGET_DEVICES += psg1218b
 
+define Device/phicomm_k2g
+  DTS := K2G
+  IMAGE_SIZE := 7552k
+  DEVICE_TITLE := Phicomm K2G
+  DEVICE_PACKAGES := kmod-mt76x2
+endef
+TARGET_DEVICES += phicomm_k2g
+
 define Device/rp-n53
   DTS := RP-N53
   DEVICE_TITLE := Asus RP-N53
@@ -479,6 +494,14 @@ define Device/vonets_var11n-300
 endef
 TARGET_DEVICES += vonets_var11n-300
 
+define Device/ravpower_wd03
+  DTS := WD03
+  IMAGE_SIZE := $(ralink_default_fw_size_8M)
+  DEVICE_TITLE := Ravpower WD03
+  DEVICE_PACKAGES := kmod-usb2 kmod-usb-ohci kmod-mt76 kmod-usb-ehci
+endef
+TARGET_DEVICES += ravpower_wd03
+
 define Device/whr-1166d
   DTS := WHR-1166D
   IMAGE_SIZE := 15040k
@@ -512,7 +535,7 @@ define Device/wn3000rpv3
   DTS := WN3000RPV3
   BLOCKSIZE := 4k
   IMAGES += factory.bin
-  KERNEL := $(KERNEL_DTB) | uImage lzma | pad-offset 64k 64 | append-uImage-fakeroot-hdr
+  KERNEL := $(KERNEL_DTB) | uImage lzma | pad-offset 64k 64 | append-uImage-fakehdr filesystem
   IMAGE/factory.bin := $$(sysupgrade_bin) | check-size $$$$(IMAGE_SIZE) | \
 	netgear-dni
   DEVICE_TITLE := Netgear WN3000RPv3

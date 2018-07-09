@@ -60,7 +60,7 @@ endef
 
 define Build/netgear-dni
 	$(STAGING_DIR_HOST)/bin/mkdniimg \
-		-B $(NETGEAR_BOARD_ID) -v $(VERSION_DIST).$(REVISION) \
+		-B $(NETGEAR_BOARD_ID) -v $(VERSION_DIST).$(firstword $(subst -, ,$(REVISION))) \
 		$(if $(NETGEAR_HW_ID),-H $(NETGEAR_HW_ID)) \
 		-r "$(1)" \
 		-i $@ -o $@.new
@@ -77,17 +77,17 @@ define Build/append-squashfs-fakeroot-be
 	cat $@.fakesquashfs >> $@
 endef
 
-# append a fake/empty rootfs uImage header, to fool the bootloaders
-# rootfs integrity check
-define Build/append-uImage-fakeroot-hdr
-	touch $@.fakeroot
+# append a fake/empty uImage header, to fool bootloaders rootfs integrity check
+# for example
+define Build/append-uImage-fakehdr
+	touch $@.fakehdr
 	$(STAGING_DIR_HOST)/bin/mkimage \
-		-A $(LINUX_KARCH) -O linux -T filesystem -C none \
-		-n '$(call toupper,$(LINUX_KARCH)) $(VERSION_DIST) fakeroot' \
-		-d $@.fakeroot \
+		-A $(LINUX_KARCH) -O linux -T $(1) -C none \
+		-n '$(VERSION_DIST) fake $(1)' \
+		-d $@.fakehdr \
 		-s \
-		$@.fakeroot
-	cat $@.fakeroot >> $@
+		$@.fakehdr
+	cat $@.fakehdr >> $@
 endef
 
 define Build/tplink-safeloader
@@ -135,7 +135,7 @@ define Build/lzma-no-dict
 endef
 
 define Build/gzip
-	gzip --force -9n -c $@ $(1) > $@.new
+	gzip -f -9n -c $@ $(1) > $@.new
 	@mv $@.new $@
 endef
 
@@ -184,6 +184,10 @@ define Build/append-ubi
 		$(UBINIZE_OPTS)
 	cat $@.tmp >> $@
 	rm $@.tmp
+endef
+
+define Build/append-uboot
+	dd if=$(UBOOT_PATH) >> $@
 endef
 
 define Build/pad-to
