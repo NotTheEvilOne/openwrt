@@ -7,6 +7,8 @@ BOARDNAME:=RT288x based boards
 FEATURES+=small_flash
 CPU_TYPE:=24kc
 
+KERNEL_PATCHVER:=4.9
+
 DEFAULT_PACKAGES += kmod-rt2800-soc wpad-mini
 
 define Target/Description
